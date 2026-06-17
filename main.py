@@ -30,4 +30,19 @@ for lead in leads:
     status = classify_lead(lead)
     print(f"{lead['name']} -> {status}")
 
+# Step 6: Search Engine (Upgrade v2)
+search_name = "Sarah"
+found = False
+
+print(f"\n--- Searching for: {search_name} ---")
+for lead in leads:
+    if lead["name"] == search_name:
+        status = classify_lead(lead)
+        print(f"Found: {lead['name']} | Status: {status} | Score: {lead['score']}")
+        found = True
+        break
+
+if not found:
+    print(f"Result: Customer '{search_name}' not found in the database.")
+
 print(f"\nFinal Lead Count: {len(leads)}")
