@@ -114,6 +114,22 @@ def count_vips(customers):
             vip_count += 1
     return vip_count
 
+def count_regular(customers):
+    regular_count = 0
+    for customer in customers:
+        if customer["status"] == "Regular":
+            regular_count += 1
+    return regular_count
+
+def calculate_status_percentage(customers, status):
+    if not customers:
+        return 0
+    count = 0
+    for customer in customers:
+        if customer["status"] == status:
+            count += 1
+    return (count / len(customers)) * 100
+
 # TEST DATA (V3 EXECUTION)
 print(add_customer(customers, "Victor", "Regular"))
 print(add_customer(customers, "Ruby", "VIP"))
@@ -127,6 +143,15 @@ print(upgrade_customer(customers, "Victor"))
 print(upgrade_customer(customers, "Victor"))
 
 print("\nTotal VIP Customers:", count_vips(customers))
+print("Total Regular Customers:", count_regular(customers))
+
+# Percentage Calculations
+vip_percent = calculate_status_percentage(customers, "VIP")
+reg_percent = calculate_status_percentage(customers, "Regular")
+
+print(f"\n--- Database Analytics ---")
+print(f"VIP Percentage: {vip_percent:.2f}%")
+print(f"Regular Percentage: {reg_percent:.2f}%")
 
 # Printing the entire database
 print_customers(customers)
