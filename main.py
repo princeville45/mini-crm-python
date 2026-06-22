@@ -1,3 +1,57 @@
+# Step 1: Create the leads (V1 Legacy)
+leads = [
+    {"name": "Victor", "score": 90},
+    {"name": "Ruby", "score": 65},
+    {"name": "James", "score": 40}
+]
+
+# Step 2: Create the classifier (V1 Legacy)
+def classify_lead(lead):
+    if lead["score"] >= 80:
+        return "VIP"
+    elif lead["score"] >= 50:
+        return "Qualified"
+    else:
+        return "Nurture"
+
+# Step 3: Process all leads
+print("--- Initial Batch ---")
+for lead in leads:
+    status = classify_lead(lead)
+    print(f"{lead['name']} -> {status}")
+
+# Step 4: Add a new lead
+new_lead = {"name": "Sarah", "score": 80}
+leads.append(new_lead)
+
+# Step 5: Run again
+print("\n--- Updated Batch (with Sarah) ---")
+for lead in leads:
+    status = classify_lead(lead)
+    print(f"{lead['name']} -> {status}")
+
+# Step 6: Search Engine (Upgrade v2)
+search_name = "Sarah"
+found = False
+
+print(f"\n--- Searching for: {search_name} (Upgrade V2) ---")
+for lead in leads:
+    if lead["name"] == search_name:
+        status = classify_lead(lead)
+        print(f"Found: {lead['name']} | Status: {status} | Score: {lead['score']}")
+        found = True
+        break
+
+if not found:
+    print(f"Result: Customer '{search_name}' not found in the database.")
+
+print(f"\nFinal Lead Count: {len(leads)}")
+
+# --- UPGRADE V3: FUNCTIONAL ENGINE ---
+print("\n" + "="*30)
+print("UPGRADE V3: FUNCTIONAL ENGINE")
+print("="*30)
+
 customers = []
 
 def add_customer(customers, name, status):
@@ -52,18 +106,22 @@ def count_vips(customers):
             vip_count += 1
     return vip_count
 
-# TEST DATA
+# TEST DATA (V3 EXECUTION)
 print(add_customer(customers, "Victor", "Regular"))
 print(add_customer(customers, "Ruby", "VIP"))
 print(add_customer(customers, "James", "Regular"))
 
+print("\n--- Searching for: Victor (Upgrade V3) ---")
 print(find_customer(customers, "Victor"))
 
+print("\n--- Upgrading Status ---")
 print(upgrade_customer(customers, "Victor"))
 print(upgrade_customer(customers, "Victor"))
 
-print("Total VIP Customers:", count_vips(customers))
+print("\nTotal VIP Customers:", count_vips(customers))
 
+print("\n--- Removing Customer ---")
 print(remove_customer(customers, "Ruby"))
 
+print("\nFinal V3 Customer Database:")
 print(customers)
