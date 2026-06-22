@@ -79,6 +79,14 @@ def find_customer(customers, name):
             }
     return f"Customer Not Found: {name}"
 
+def print_customers(customers):
+    print("\n--- Current Customer Database ---")
+    if not customers:
+        print("Database is empty.")
+    else:
+        for customer in customers:
+            print(f"Name: {customer['name']} | Status: {customer['status']}")
+
 def upgrade_customer(customers, name):
     for customer in customers:
         if customer["name"] == name:
@@ -120,8 +128,11 @@ print(upgrade_customer(customers, "Victor"))
 
 print("\nTotal VIP Customers:", count_vips(customers))
 
+# Printing the entire database
+print_customers(customers)
+
 print("\n--- Removing Customer ---")
 print(remove_customer(customers, "Ruby"))
 
 print("\nFinal V3 Customer Database:")
-print(customers)
+print_customers(customers)
