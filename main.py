@@ -1,48 +1,69 @@
-# Step 1: Create the leads
-leads = [
-    {"name": "Victor", "score": 90},
-    {"name": "Ruby", "score": 65},
-    {"name": "James", "score": 40}
-]
+customers = []
 
-# Step 2: Create the classifier
-def classify_lead(lead):
-    if lead["score"] >= 80:
-        return "VIP"
-    elif lead["score"] >= 50:
-        return "Qualified"
-    else:
-        return "Nurture"
+def add_customer(customers, name, status):
+    for customer in customers:
+        if customer["name"] == name:
+            return f"Customer already exists: {name}"
+    
+    new_customer = {
+        "name": name,
+        "status": status
+    }
+    
+    customers.append(new_customer)
+    return {
+        "message": "Customer Added Successfully",
+        "customer": new_customer
+    }
 
-# Step 3: Process all leads
-print("--- Initial Batch ---")
-for lead in leads:
-    status = classify_lead(lead)
-    print(f"{lead['name']} -> {status}")
+def find_customer(customers, name):
+    for customer in customers:
+        if customer["name"] == name:
+            return {
+                "message": f"Customer Found: {name}",
+                "customer": customer
+            }
+    return f"Customer Not Found: {name}"
 
-# Step 4: Add a new lead
-new_lead = {"name": "Sarah", "score": 80}
-leads.append(new_lead)
+def upgrade_customer(customers, name):
+    for customer in customers:
+        if customer["name"] == name:
+            if customer["status"] == "VIP":
+                return f"Customer is already VIP: {name}"
+            
+            customer["status"] = "VIP"
+            return {
+                "message": "Customer Upgraded Successfully",
+                "customer": customer
+            }
+    return f"Customer Not Found: {name}"
 
-# Step 5: Run again
-print("\n--- Updated Batch (with Sarah) ---")
-for lead in leads:
-    status = classify_lead(lead)
-    print(f"{lead['name']} -> {status}")
+def remove_customer(customers, name):
+    for customer in customers:
+        if customer["name"] == name:
+            customers.remove(customer)
+            return f"Customer Removed Successfully: {name}"
+    return f"Customer Not Found: {name}"
 
-# Step 6: Search Engine (Upgrade v2)
-search_name = "Sarah"
-found = False
+def count_vips(customers):
+    vip_count = 0
+    for customer in customers:
+        if customer["status"] == "VIP":
+            vip_count += 1
+    return vip_count
 
-print(f"\n--- Searching for: {search_name} ---")
-for lead in leads:
-    if lead["name"] == search_name:
-        status = classify_lead(lead)
-        print(f"Found: {lead['name']} | Status: {status} | Score: {lead['score']}")
-        found = True
-        break
+# TEST DATA
+print(add_customer(customers, "Victor", "Regular"))
+print(add_customer(customers, "Ruby", "VIP"))
+print(add_customer(customers, "James", "Regular"))
 
-if not found:
-    print(f"Result: Customer '{search_name}' not found in the database.")
+print(find_customer(customers, "Victor"))
 
-print(f"\nFinal Lead Count: {len(leads)}")
+print(upgrade_customer(customers, "Victor"))
+print(upgrade_customer(customers, "Victor"))
+
+print("Total VIP Customers:", count_vips(customers))
+
+print(remove_customer(customers, "Ruby"))
+
+print(customers)
