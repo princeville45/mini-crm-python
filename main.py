@@ -1,94 +1,94 @@
-# mini-crm-python
-# Customer Relationship Management (CRM)
-# Versions: V1, V2, V3
+import json
+import os
 
-# --- V1: INITIAL CLASSIFIER ---
-leads = [
-    {"name": "Victor", "score": 90},
-    {"name": "Ruby", "score": 65},
-    {"name": "James", "score": 40}
-]
+# CRM V4 BUILD SPECIFICATION
+# PROJECT NAME: Mini CRM V4
+# OBJECTIVE: Convert CRM V3 from RAM-only storage to persistent JSON storage.
 
-def classify_lead(lead):
-    if lead["score"] >= 80:
-        return "VIP"
-    elif lead["score"] >= 50:
-        return "Qualified"
-    else:
-        return "Nurture"
+DB_FILE = "customers.json"
 
-print("--- Initial Batch (V1) ---")
-for lead in leads:
-    status = classify_lead(lead)
-    print(f"{lead['name']} -> {status}")
+def load_customers():
+    """Feature 2: Load Customers / Feature 10: Self Healing"""
+    if not os.path.exists(DB_FILE):
+        return []
+    
+    try:
+        with open(DB_FILE, "r") as f:
+            return json.load(f)
+    except (json.JSONDecodeError, IOError):
+        print("Warning: Database file corrupted. Starting with empty list.")
+        return []
 
-# --- V2: SEARCH ENGINE ---
-new_lead = {"name": "Sarah", "score": 80}
-leads.append(new_lead)
-
-search_name = "Sarah"
-found = False
-
-print(f"\n--- Searching for: {search_name} (V2) ---")
-for lead in leads:
-    if lead["name"] == search_name:
-        status = classify_lead(lead)
-        print(f"Found: {lead['name']} | Status: {status} | Score: {lead['score']}")
-        found = True
-        break
-
-if not found:
-    print(f"Result: Customer '{search_name}' not found.")
-
-# --- V3: FUNCTIONAL ENGINE ---
-print("\n" + "="*30)
-print("V3: FUNCTIONAL ENGINE")
-print("="*30)
-
-customers = []
+def save_customers(customers):
+    """Feature 3: Save Customers"""
+    try:
+        with open(DB_FILE, "w") as f:
+            json.dump(customers, f, indent=4)
+    except IOError as e:
+        print(f"Error saving database: {e}")
 
 def add_customer(customers, name, status):
+    """Feature 4: Add Customer"""
     for customer in customers:
         if customer["name"] == name:
-            return f"Customer already exists: {name}"
-    new_customer = {"name": name, "status": status}
-    customers.append(new_customer)
-    return {"message": "Customer Added", "customer": new_customer}
+            return "Customer already exists"
+    
+    customers.append({"name": name, "status": status})
+    save_customers(customers)
+    return "Customer added successfully"
+
+def remove_customer(customers, name):
+    """Feature 5: Remove Customer"""
+    for i, customer in enumerate(customers):
+        if customer["name"] == name:
+            customers.pop(i)
+            save_customers(customers)
+            return "Customer removed successfully"
+    return "Customer not found"
+
+def upgrade_customer(customers, name):
+    """Feature 6: Upgrade Customer"""
+    for customer in customers:
+        if customer["name"] == name:
+            if customer["status"] == "VIP":
+                return "Customer already VIP"
+            customer["status"] = "VIP"
+            save_customers(customers)
+            return "Customer upgraded successfully"
+    return "Customer not found"
 
 def find_customer(customers, name):
+    """Feature 7: Find Customer"""
     for customer in customers:
         if customer["name"] == name:
-            return {"message": "Customer Found", "customer": customer}
-    return f"Customer Not Found: {name}"
-
-def print_customers(customers):
-    print("\n--- Customer Database ---")
-    if not customers:
-        print("Empty.")
-    else:
-        for customer in customers:
-            print(f"Name: {customer['name']} | Status: {customer['status']}")
+            return customer
+    return "Customer not found"
 
 def count_vips(customers):
-    return sum(1 for c in customers if c["status"] == "VIP")
+    """Feature 8: Count VIPs"""
+    return sum(1 for c in customers if c.get("status") == "VIP")
 
-def count_regular(customers):
-    return sum(1 for c in customers if c["status"] == "Regular")
+# Feature 9: Startup Workflow
+if __name__ == "__main__":
+    print("--- CRM V4 ENGINE STARTING ---")
+    customers = load_customers()
+    print(f"Engine Ready. Loaded {len(customers)} customers.")
 
-def calculate_status_percentage(customers, status):
-    if not customers: return 0
-    count = sum(1 for c in customers if c["status"] == status)
-    return (count / len(customers)) * 100
-
-# EXECUTION
-print(add_customer(customers, "Victor", "Regular"))
-print(add_customer(customers, "Ruby", "VIP"))
-print(add_customer(customers, "James", "Regular"))
-
-print("\n--- Analytics ---")
-print("VIPs:", count_vips(customers))
-print("Regulars:", count_regular(customers))
-print(f"VIP %: {calculate_status_percentage(customers, 'VIP'):.2f}%")
-print(f"Regular %: {calculate_status_percentage(customers, 'Regular'):.2f}%")
-
-print_customers(customers)
+    # Feature 11: Release Verification
+    # Testing the V4 protocol
+    print("\n[V4 TEST: ADD]")
+    print(add_customer(customers, "Victor", "VIP"))
+    print(add_customer(customers, "Ruby", "Qualified"))
+    
+    print("\n[V4 TEST: FIND]")
+    print(f"Searching for Victor: {find_customer(customers, 'Victor')}")
+    
+    print("\n[V4 TEST: UPGRADE]")
+    print(f"Upgrading Ruby: {upgrade_customer(customers, 'Ruby')}")
+    
+    print("\n[V4 TEST: COUNT]")
+    print(f"Total VIPs: {count_vips(customers)}")
+    
+    print("\n[V4 TEST: PERSISTENCE]")
+    print("Check customers.json for persistent data.")
+    print("--- CRM V4 OPERATIONAL ---")
